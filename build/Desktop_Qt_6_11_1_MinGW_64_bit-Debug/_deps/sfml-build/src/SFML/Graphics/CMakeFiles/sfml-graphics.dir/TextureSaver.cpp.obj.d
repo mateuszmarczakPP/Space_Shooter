@@ -1,0 +1,18 @@
+_deps/sfml-build/src/SFML/Graphics/CMakeFiles/sfml-graphics.dir/TextureSaver.cpp.obj: \
+ D:\Space_Shooter\build\Desktop_Qt_6_11_1_MinGW_64_bit-Debug\_deps\sfml-src\src\SFML\Graphics\TextureSaver.cpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/src/SFML/Graphics/TextureSaver.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/src/SFML/Graphics/GLCheck.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Config.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/src/SFML/Graphics/GLExtensions.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/extlibs/headers/glad/include/glad/gl.h \
+ C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/stdint.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/stdint.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/crtdefs.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/corecrt.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/_mingw.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/_mingw_mac.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/_mingw_secapi.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/vadefs.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+ C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/stddef.h \
+ C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/stddef.h

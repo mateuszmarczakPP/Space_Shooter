@@ -1,0 +1,3 @@
+D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-subbuild/CMakeFiles/sfml-populate.dir
+D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-subbuild/CMakeFiles/edit_cache.dir
+D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-subbuild/CMakeFiles/rebuild_cache.dir
