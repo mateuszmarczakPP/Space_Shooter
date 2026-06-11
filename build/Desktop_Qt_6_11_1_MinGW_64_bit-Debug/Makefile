@@ -391,6 +391,30 @@ ScoreManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/ScoreManager.cpp.s
 .PHONY : ScoreManager.cpp.s
 
+TimeBonus.obj: TimeBonus.cpp.obj
+.PHONY : TimeBonus.obj
+
+# target to build an object file
+TimeBonus.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.obj
+.PHONY : TimeBonus.cpp.obj
+
+TimeBonus.i: TimeBonus.cpp.i
+.PHONY : TimeBonus.i
+
+# target to preprocess a source file
+TimeBonus.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.i
+.PHONY : TimeBonus.cpp.i
+
+TimeBonus.s: TimeBonus.cpp.s
+.PHONY : TimeBonus.s
+
+# target to generate assembly for a file
+TimeBonus.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.s
+.PHONY : TimeBonus.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -451,6 +475,9 @@ help:
 	@echo ... ScoreManager.obj
 	@echo ... ScoreManager.i
 	@echo ... ScoreManager.s
+	@echo ... TimeBonus.obj
+	@echo ... TimeBonus.i
+	@echo ... TimeBonus.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

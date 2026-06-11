@@ -271,4 +271,5 @@ CMakeFiles/Space_Shooter.dir/main.cpp.obj: D:\Space_Shooter\main.cpp \
  C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/tr1/poly_laguerre.tcc \
  C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/tr1/riemann_zeta.tcc \
  D:\Space_Shooter\Bullet.h D:\Space_Shooter\Asteroid.h \
- D:\Space_Shooter\Menu.h D:\Space_Shooter\ScoreManager.h
+ D:\Space_Shooter\Menu.h D:\Space_Shooter\ScoreManager.h \
+ D:\Space_Shooter\TimeBonus.h

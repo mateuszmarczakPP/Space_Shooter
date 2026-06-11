@@ -3,7 +3,7 @@
 #include <ctime>
 #include <iostream>
 #include <sstream>
-#include <iomanip> 
+#include <iomanip>
 
 //klasy
 #include "Player.h"
@@ -11,6 +11,7 @@
 #include "Bullet.h"
 #include "Menu.h"
 #include "ScoreManager.h"
+#include "TimeBonus.h" // NOWE: dodana klasa czasówki
 
 //typ enum określający w jakim stanie znajduje się gra
 enum GameState { MENU, NICKNAME_INPUT, GAME, HIGHSCORES, GAME_OVER };
@@ -29,10 +30,11 @@ int main() {
         std::cout << "KRYTYCZNY BLAD: Nie mozna wczytac czcionki!\n";
     }
 
-    sf::Texture texBullet, texAst, texBg;
+    sf::Texture texBullet, texAst, texBg, texBonus;
     texBullet.loadFromFile("bullet.png");
     texAst.loadFromFile("asteroid.png");
     texBg.loadFromFile("background.png");
+    texBonus.loadFromFile("time_bonus.png"); // NOWE: wczytywanie tekstury czasówki
 
     // Skalowanie tła do rozmiaru okna
     sf::Sprite background(texBg);
@@ -61,6 +63,7 @@ int main() {
     Player player;
     std::vector<Bullet*> bullets;
     std::vector<Asteroid*> asteroids;
+    std::vector<TimeBonus*> timeBonuses; // NOWE: wektor przechowujący na planszy czasówki
 
     std::string playerNick = "";
     int score = 0;
@@ -68,6 +71,7 @@ int main() {
     float gameTimeMax = 30.f;
     sf::Clock gameClock;
     int spawnTimer = 0;
+    int timeBonusSpawnTimer = 0; // NOWE: Timer spawnowania czasówki
 
     // data
     std::time_t t = std::time(nullptr);
@@ -76,7 +80,7 @@ int main() {
 
     std::ostringstream oss;
     oss << std::put_time(&tm, "%Y-%m-%d");
-    std::string dateString = oss.str(); // Zmieniono nazwę z 'time' na 'dateString'
+    std::string dateString = oss.str();
 
     // --- GŁÓWNA PĘTLA PROGRAMU ---
     while (window.isOpen()) {
@@ -114,9 +118,17 @@ int main() {
                         score = 0;
                         playerHit = false;
                         gameClock.restart(); // Reset czasu
+                        gameTimeMax = 30.f;  // NOWE: resetowanie max czasu przy uruchomieniu gry po raz kolejny
+                        timeBonusSpawnTimer = 0;
                         player.resetPosition(); // Reset statku
+
+                        // NOWE: czyszczenie obiektów w przypadku restartu
+                        for (auto* a : asteroids) delete a;
                         asteroids.clear();
+                        for (auto* b : bullets) delete b;
                         bullets.clear();
+                        for (auto* tb : timeBonuses) delete tb;
+                        timeBonuses.clear();
                     }
                 }
                 else if (event.text.unicode < 128 && playerNick.length() < 12) {
@@ -138,11 +150,11 @@ int main() {
             // Warunki końca gry
             if (timeLeft <= 0 || playerHit) {
                 state = GAME_OVER;
-                ScoreManager::save(playerNick, score, dateString); // Zapis z datą
+                ScoreManager::save(playerNick, score, dateString);
 
                 std::stringstream ss;
                 ss << (playerHit ? "STATEK ZNISZCZONY!" : "KONIEC CZASU!")
-                    << "\nWYNIK: " << score << "\n\nESC - MENU";
+                   << "\nWYNIK: " << score << "\n\nESC - MENU";
                 gameOverText.setString(ss.str());
 
                 // Wyśrodkowanie tekstu końca gry
@@ -170,6 +182,35 @@ int main() {
                 if (bullets[i]->isOutOfBounds(window)) {
                     delete bullets[i];
                     bullets.erase(bullets.begin() + i--);
+                }
+            }
+
+            // NOWE: SYSTEM SPAWNOWANIA CZASÓWEK
+            // Czekamy 600 klatek (czyli równe 10 sekund przy 60 fps)
+            if (++timeBonusSpawnTimer >= 600) {
+                // Pojawia się w obszarze bezpiecznym od krawędzi (50 px do 1230 px)
+                float px = rand() % 1180 + 50.f;
+                float py = rand() % 620 + 50.f;
+                timeBonuses.push_back(new TimeBonus(&texBonus, px, py));
+                timeBonusSpawnTimer = 0;
+            }
+
+            // NOWE: AKTUALIZACJA I WYKRYWANIE CZASÓWEK
+            for (int i = 0; i < timeBonuses.size(); i++) {
+                timeBonuses[i]->update();
+
+                // Jeżeli gracz najedzie na czasówkę (Kolizja)
+                if (timeBonuses[i]->getBounds().intersects(player.getBounds())) {
+                    gameTimeMax += 15.f; // Dodajemy 15s poprzez zwiększenie marginesu
+                    delete timeBonuses[i];
+                    timeBonuses.erase(timeBonuses.begin() + i--);
+                    continue; // Przejście do następnego bonusu w pętli
+                }
+
+                // Usuwanie z mapy po 7 sekundach jeśli nie zbierze
+                if (timeBonuses[i]->isExpired()) {
+                    delete timeBonuses[i];
+                    timeBonuses.erase(timeBonuses.begin() + i--);
                 }
             }
 
@@ -227,6 +268,7 @@ int main() {
         }
         else if (state == GAME) {
             for (auto* b : bullets) b->render(&window);
+            for (auto* tb : timeBonuses) tb->render(&window); // NOWE: Rysowanie na ekranie
             for (auto* a : asteroids) a->render(&window);
             player.render(window);
             window.draw(uiText);
@@ -240,6 +282,7 @@ int main() {
     // CZYSZCZENIE PAMIĘCI
     for (auto* b : bullets) delete b;
     for (auto* a : asteroids) delete a;
+    for (auto* tb : timeBonuses) delete tb; // NOWE: Zapobieganie wyciekowi
 
     return 0;
 }

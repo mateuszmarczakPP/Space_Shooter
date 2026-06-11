@@ -21,7 +21,9 @@ set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
 FetchContent_MakeAvailable(SFML)
 
 add_executable(Space_Shooter main.cpp
-    ARIAL.TTF Asteroid.cpp Asteroid.h asteroid.png Background.png Bullet.cpp Bullet.h bullet.png config.txt font.ttf highscores.txt Menu.cpp Menu.h Player.cpp Player.h ScoreManager.cpp ScoreManager.h ship.png ship_move.png)
+    ARIAL.TTF Asteroid.cpp Asteroid.h asteroid.png Background.png Bullet.cpp Bullet.h bullet.png config.txt font.ttf highscores.txt Menu.cpp Menu.h Player.cpp Player.h ScoreManager.cpp ScoreManager.h ship.png ship_move.png
+    TimeBonus.cpp TimeBonus.h
+    time_bonus.png)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     sfml-graphics 

@@ -13,6 +13,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/Space_Shooter/Menu.cpp" "CMakeFiles/Space_Shooter.dir/Menu.cpp.obj" "gcc" "CMakeFiles/Space_Shooter.dir/Menu.cpp.obj.d"
   "D:/Space_Shooter/Player.cpp" "CMakeFiles/Space_Shooter.dir/Player.cpp.obj" "gcc" "CMakeFiles/Space_Shooter.dir/Player.cpp.obj.d"
   "D:/Space_Shooter/ScoreManager.cpp" "CMakeFiles/Space_Shooter.dir/ScoreManager.cpp.obj" "gcc" "CMakeFiles/Space_Shooter.dir/ScoreManager.cpp.obj.d"
+  "D:/Space_Shooter/TimeBonus.cpp" "CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.obj" "gcc" "CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.obj.d"
   "D:/Space_Shooter/main.cpp" "CMakeFiles/Space_Shooter.dir/main.cpp.obj" "gcc" "CMakeFiles/Space_Shooter.dir/main.cpp.obj.d"
   )
 
