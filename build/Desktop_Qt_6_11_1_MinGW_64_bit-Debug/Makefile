@@ -319,30 +319,6 @@ Bullet.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Bullet.cpp.s
 .PHONY : Bullet.cpp.s
 
-Explosion.obj: Explosion.cpp.obj
-.PHONY : Explosion.obj
-
-# target to build an object file
-Explosion.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj
-.PHONY : Explosion.cpp.obj
-
-Explosion.i: Explosion.cpp.i
-.PHONY : Explosion.i
-
-# target to preprocess a source file
-Explosion.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Explosion.cpp.i
-.PHONY : Explosion.cpp.i
-
-Explosion.s: Explosion.cpp.s
-.PHONY : Explosion.s
-
-# target to generate assembly for a file
-Explosion.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Explosion.cpp.s
-.PHONY : Explosion.cpp.s
-
 Menu.obj: Menu.cpp.obj
 .PHONY : Menu.obj
 
@@ -439,6 +415,30 @@ TimeBonus.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.s
 .PHONY : TimeBonus.cpp.s
 
+explosion.obj: explosion.cpp.obj
+.PHONY : explosion.obj
+
+# target to build an object file
+explosion.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/explosion.cpp.obj
+.PHONY : explosion.cpp.obj
+
+explosion.i: explosion.cpp.i
+.PHONY : explosion.i
+
+# target to preprocess a source file
+explosion.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/explosion.cpp.i
+.PHONY : explosion.cpp.i
+
+explosion.s: explosion.cpp.s
+.PHONY : explosion.s
+
+# target to generate assembly for a file
+explosion.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/explosion.cpp.s
+.PHONY : explosion.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -490,9 +490,6 @@ help:
 	@echo ... Bullet.obj
 	@echo ... Bullet.i
 	@echo ... Bullet.s
-	@echo ... Explosion.obj
-	@echo ... Explosion.i
-	@echo ... Explosion.s
 	@echo ... Menu.obj
 	@echo ... Menu.i
 	@echo ... Menu.s
@@ -505,6 +502,9 @@ help:
 	@echo ... TimeBonus.obj
 	@echo ... TimeBonus.i
 	@echo ... TimeBonus.s
+	@echo ... explosion.obj
+	@echo ... explosion.i
+	@echo ... explosion.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

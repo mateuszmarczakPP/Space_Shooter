@@ -44,9 +44,14 @@ file(COPY
     ${CMAKE_CURRENT_SOURCE_DIR}/asteroid.png
     ${CMAKE_CURRENT_SOURCE_DIR}/background.png
     ${CMAKE_CURRENT_SOURCE_DIR}/ship.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/ship_thrust.png
     ${CMAKE_CURRENT_SOURCE_DIR}/time_bonus.png
     ${CMAKE_CURRENT_SOURCE_DIR}/explosion.png
     ${CMAKE_CURRENT_SOURCE_DIR}/explosion.wav
+    ${CMAKE_CURRENT_SOURCE_DIR}/shoot.wav
+    ${CMAKE_CURRENT_SOURCE_DIR}/crash.wav
+    ${CMAKE_CURRENT_SOURCE_DIR}/thrust.wav
+    ${CMAKE_CURRENT_SOURCE_DIR}/reload.wav
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 )
 

@@ -501,7 +501,7 @@ CMakeFiles/Space_Shooter.dir/Bullet.cpp.obj: D:/Space_Shooter/Bullet.cpp \
   _deps/sfml-src/include/SFML/Window/WindowStyle.hpp \
   D:/Space_Shooter/Bullet.h
 
-CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj: D:/Space_Shooter/Explosion.cpp \
+CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj: D:/Space_Shooter/explosion.cpp \
   C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/algorithm \
   C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward/binders.h \
   C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bit \
@@ -785,7 +785,6 @@ CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj: D:/Space_Shooter/Explosion.cpp \
   _deps/sfml-src/include/SFML/Window/WindowBase.hpp \
   _deps/sfml-src/include/SFML/Window/WindowHandle.hpp \
   _deps/sfml-src/include/SFML/Window/WindowStyle.hpp \
-  D:/Space_Shooter/explosion.cpp \
   D:/Space_Shooter/Explosion.h
 
 CMakeFiles/Space_Shooter.dir/Menu.cpp.obj: D:/Space_Shooter/Menu.cpp \
@@ -2603,8 +2602,6 @@ _deps/sfml-src/include/SFML/Window/WindowStyle.hpp:
 _deps/sfml-src/include/SFML/Audio/Music.hpp:
 
 D:/Space_Shooter/Bullet.cpp:
-
-D:/Space_Shooter/Explosion.cpp:
 
 C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/specfun.h:
 

@@ -173,20 +173,20 @@ CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.s"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Space_Shooter\TimeBonus.cpp -o CMakeFiles\Space_Shooter.dir\TimeBonus.cpp.s
 
-CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj: CMakeFiles/Space_Shooter.dir/flags.make
-CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj: CMakeFiles/Space_Shooter.dir/includes_CXX.rsp
-CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj: D:/Space_Shooter/Explosion.cpp
-CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj: CMakeFiles/Space_Shooter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Space_Shooter\build\Desktop_Qt_6_11_1_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj"
-	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj -MF CMakeFiles\Space_Shooter.dir\Explosion.cpp.obj.d -o CMakeFiles\Space_Shooter.dir\Explosion.cpp.obj -c D:\Space_Shooter\Explosion.cpp
+CMakeFiles/Space_Shooter.dir/explosion.cpp.obj: CMakeFiles/Space_Shooter.dir/flags.make
+CMakeFiles/Space_Shooter.dir/explosion.cpp.obj: CMakeFiles/Space_Shooter.dir/includes_CXX.rsp
+CMakeFiles/Space_Shooter.dir/explosion.cpp.obj: D:/Space_Shooter/explosion.cpp
+CMakeFiles/Space_Shooter.dir/explosion.cpp.obj: CMakeFiles/Space_Shooter.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Space_Shooter\build\Desktop_Qt_6_11_1_MinGW_64_bit-Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Space_Shooter.dir/explosion.cpp.obj"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Space_Shooter.dir/explosion.cpp.obj -MF CMakeFiles\Space_Shooter.dir\explosion.cpp.obj.d -o CMakeFiles\Space_Shooter.dir\explosion.cpp.obj -c D:\Space_Shooter\explosion.cpp
 
-CMakeFiles/Space_Shooter.dir/Explosion.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Space_Shooter.dir/Explosion.cpp.i"
-	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Space_Shooter\Explosion.cpp > CMakeFiles\Space_Shooter.dir\Explosion.cpp.i
+CMakeFiles/Space_Shooter.dir/explosion.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Space_Shooter.dir/explosion.cpp.i"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Space_Shooter\explosion.cpp > CMakeFiles\Space_Shooter.dir\explosion.cpp.i
 
-CMakeFiles/Space_Shooter.dir/Explosion.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Space_Shooter.dir/Explosion.cpp.s"
-	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Space_Shooter\Explosion.cpp -o CMakeFiles\Space_Shooter.dir\Explosion.cpp.s
+CMakeFiles/Space_Shooter.dir/explosion.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Space_Shooter.dir/explosion.cpp.s"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Space_Shooter\explosion.cpp -o CMakeFiles\Space_Shooter.dir\explosion.cpp.s
 
 # Object files for target Space_Shooter
 Space_Shooter_OBJECTS = \
@@ -197,7 +197,7 @@ Space_Shooter_OBJECTS = \
 "CMakeFiles/Space_Shooter.dir/Player.cpp.obj" \
 "CMakeFiles/Space_Shooter.dir/ScoreManager.cpp.obj" \
 "CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.obj" \
-"CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj"
+"CMakeFiles/Space_Shooter.dir/explosion.cpp.obj"
 
 # External object files for target Space_Shooter
 Space_Shooter_EXTERNAL_OBJECTS =
@@ -209,7 +209,7 @@ Space_Shooter.exe: CMakeFiles/Space_Shooter.dir/Menu.cpp.obj
 Space_Shooter.exe: CMakeFiles/Space_Shooter.dir/Player.cpp.obj
 Space_Shooter.exe: CMakeFiles/Space_Shooter.dir/ScoreManager.cpp.obj
 Space_Shooter.exe: CMakeFiles/Space_Shooter.dir/TimeBonus.cpp.obj
-Space_Shooter.exe: CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj
+Space_Shooter.exe: CMakeFiles/Space_Shooter.dir/explosion.cpp.obj
 Space_Shooter.exe: CMakeFiles/Space_Shooter.dir/build.make
 Space_Shooter.exe: _deps/sfml-build/lib/libsfml-graphics-s-d.a
 Space_Shooter.exe: _deps/sfml-build/lib/libsfml-window-s-d.a
