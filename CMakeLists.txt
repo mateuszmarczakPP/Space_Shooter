@@ -15,33 +15,41 @@ FetchContent_Declare(
 
 set(SFML_BUILD_EXAMPLES OFF CACHE INTERNAL "")
 set(SFML_BUILD_DOCS OFF CACHE INTERNAL "")
-
 set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
 
 FetchContent_MakeAvailable(SFML)
 
-add_executable(Space_Shooter main.cpp
-    ARIAL.TTF Asteroid.cpp Asteroid.h asteroid.png Background.png Bullet.cpp Bullet.h bullet.png config.txt font.ttf highscores.txt Menu.cpp Menu.h Player.cpp Player.h ScoreManager.cpp ScoreManager.h ship.png ship_move.png
+add_executable(Space_Shooter
+    main.cpp
+    Asteroid.cpp Asteroid.h
+    Bullet.cpp Bullet.h
+    Menu.cpp Menu.h
+    Player.cpp Player.h
+    ScoreManager.cpp ScoreManager.h
     TimeBonus.cpp TimeBonus.h
-    time_bonus.png)
+    Explosion.cpp Explosion.h
+)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE 
-    sfml-graphics 
-    sfml-window 
-    sfml-system 
+target_link_libraries(Space_Shooter PRIVATE
+    sfml-graphics
+    sfml-window
+    sfml-system
     sfml-audio
 )
 
-file(COPY 
+file(COPY
     ${CMAKE_CURRENT_SOURCE_DIR}/config.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/font.ttf
     ${CMAKE_CURRENT_SOURCE_DIR}/bullet.png
     ${CMAKE_CURRENT_SOURCE_DIR}/asteroid.png
     ${CMAKE_CURRENT_SOURCE_DIR}/background.png
     ${CMAKE_CURRENT_SOURCE_DIR}/ship.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/time_bonus.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/explosion.png
+    ${CMAKE_CURRENT_SOURCE_DIR}/explosion.wav
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 if(WIN32 AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
+    set_target_properties(Space_Shooter PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()

@@ -246,6 +246,26 @@ CMakeFiles/Space_Shooter.dir/main.cpp.obj: D:\Space_Shooter\main.cpp \
  D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Graphics/Sprite.hpp \
  D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Graphics/Text.hpp \
  D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Graphics/VertexBuffer.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/InputSoundFile.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/Export.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/Listener.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/Music.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundStream.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundSource.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/AlResource.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/OutputSoundFile.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/Sound.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundBuffer.hpp \
+ C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/set \
+ C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_set.h \
+ C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_multiset.h \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundBufferRecorder.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundRecorder.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundFileFactory.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundFileFactory.inl \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundFileReader.hpp \
+ D:/Space_Shooter/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug/_deps/sfml-src/include/SFML/Audio/SoundFileWriter.hpp \
  C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/iostream \
  C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/istream \
  C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/istream.tcc \
@@ -272,4 +292,4 @@ CMakeFiles/Space_Shooter.dir/main.cpp.obj: D:\Space_Shooter\main.cpp \
  C:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/tr1/riemann_zeta.tcc \
  D:\Space_Shooter\Bullet.h D:\Space_Shooter\Asteroid.h \
  D:\Space_Shooter\Menu.h D:\Space_Shooter\ScoreManager.h \
- D:\Space_Shooter\TimeBonus.h
+ D:\Space_Shooter\TimeBonus.h D:\Space_Shooter\Explosion.h

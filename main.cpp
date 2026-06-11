@@ -1,46 +1,67 @@
 ﻿#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <ctime>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
 
-//klasy
+// Klasy
 #include "Player.h"
 #include "Asteroid.h"
 #include "Bullet.h"
 #include "Menu.h"
 #include "ScoreManager.h"
-#include "TimeBonus.h" // NOWE: dodana klasa czasówki
+#include "TimeBonus.h"
+#include "Explosion.h"
 
-//typ enum określający w jakim stanie znajduje się gra
+// Typ enum określający w jakim stanie znajduje się gra
 enum GameState { MENU, NICKNAME_INPUT, GAME, HIGHSCORES, GAME_OVER };
 
 int main() {
-    //Inicjalizacja generatora liczb losowych
+    // Inicjalizacja generatora liczb losowych
     srand(static_cast<unsigned>(time(NULL)));
 
-    //KONFIGURACJA OKNA
+    // KONFIGURACJA OKNA
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Space Shooter Pro", sf::Style::Close | sf::Style::Titlebar);
     window.setFramerateLimit(60); // Stałe 60 klatek na sekundę
 
-    //ŁADOWANIE ZASOBÓW
+    // ŁADOWANIE ZASOBÓW
     sf::Font mainFont;
     if (!mainFont.loadFromFile("font.ttf")) {
         std::cout << "KRYTYCZNY BLAD: Nie mozna wczytac czcionki!\n";
     }
 
-    sf::Texture texBullet, texAst, texBg, texBonus;
+    sf::Texture texBullet, texAst, texBg, texBonus, texExplosion;
     texBullet.loadFromFile("bullet.png");
     texAst.loadFromFile("asteroid.png");
     texBg.loadFromFile("background.png");
-    texBonus.loadFromFile("time_bonus.png"); // NOWE: wczytywanie tekstury czasówki
+    texBonus.loadFromFile("time_bonus.png");
+    texExplosion.loadFromFile("explosion.png");
+
+    // DŹWIĘK WYBUCHU ASTEROIDY
+    sf::SoundBuffer explosionBuffer;
+    if (!explosionBuffer.loadFromFile("explosion.wav")) {
+        std::cout << "ERROR::SOUND::Nie mozna wczytac explosion.wav!" << std::endl;
+    }
+    sf::Sound explosionSound;
+    explosionSound.setBuffer(explosionBuffer);
+    explosionSound.setVolume(50.f);
+
+    // DŹWIĘK KOLIZJI STATKU (KATASTROFA)
+    sf::SoundBuffer crashBuffer;
+    if (!crashBuffer.loadFromFile("crash.wav")) {
+        std::cout << "ERROR::SOUND::Nie mozna wczytac crash.wav!" << std::endl;
+    }
+    sf::Sound crashSound;
+    crashSound.setBuffer(crashBuffer);
+    crashSound.setVolume(70.f);
 
     // Skalowanie tła do rozmiaru okna
     sf::Sprite background(texBg);
     background.setScale(1280.f / texBg.getSize().x, 720.f / texBg.getSize().y);
 
-    // 3. PRZYGOTOWANIE TEKSTÓW UI
+    // PRZYGOTOWANIE TEKSTÓW UI
     sf::Text uiText("", mainFont, 25);
     uiText.setPosition(20.f, 20.f);
 
@@ -57,13 +78,14 @@ int main() {
     sf::Text highscoreListText("", mainFont, 25);
     highscoreListText.setPosition(450.f, 100.f);
 
-    // 4. INICJALIZACJA OBIEKTÓW I ZMIENNYCH
+    // INICJALIZACJA OBIEKTÓW I ZMIENNYCH
     GameState state = MENU;
     Menu menu(1280.f, 720.f, mainFont);
     Player player;
     std::vector<Bullet*> bullets;
     std::vector<Asteroid*> asteroids;
-    std::vector<TimeBonus*> timeBonuses; // NOWE: wektor przechowujący na planszy czasówki
+    std::vector<TimeBonus*> timeBonuses;
+    std::vector<Explosion*> explosions;
 
     std::string playerNick = "";
     int score = 0;
@@ -71,9 +93,9 @@ int main() {
     float gameTimeMax = 30.f;
     sf::Clock gameClock;
     int spawnTimer = 0;
-    int timeBonusSpawnTimer = 0; // NOWE: Timer spawnowania czasówki
+    int timeBonusSpawnTimer = 0;
 
-    // data
+    // Data
     std::time_t t = std::time(nullptr);
     std::tm tm{};
     localtime_s(&tm, &t);
@@ -115,20 +137,26 @@ int main() {
                 else if (event.text.unicode == 13) {
                     if (!playerNick.empty()) {
                         state = GAME;
+
+                        crashSound.stop();
+                        explosionSound.stop();
+
                         score = 0;
                         playerHit = false;
-                        gameClock.restart(); // Reset czasu
-                        gameTimeMax = 30.f;  // NOWE: resetowanie max czasu przy uruchomieniu gry po raz kolejny
+                        gameClock.restart();
+                        gameTimeMax = 30.f;
                         timeBonusSpawnTimer = 0;
-                        player.resetPosition(); // Reset statku
+                        player.resetPosition();
 
-                        // NOWE: czyszczenie obiektów w przypadku restartu
+                        // Czyszczenie obiektów
                         for (auto* a : asteroids) delete a;
                         asteroids.clear();
                         for (auto* b : bullets) delete b;
                         bullets.clear();
                         for (auto* tb : timeBonuses) delete tb;
                         timeBonuses.clear();
+                        for (auto* e : explosions) delete e;
+                        explosions.clear();
                     }
                 }
                 else if (event.text.unicode < 128 && playerNick.length() < 12) {
@@ -147,9 +175,13 @@ int main() {
         if (state == GAME) {
             float timeLeft = gameTimeMax - gameClock.getElapsedTime().asSeconds();
 
-            // Warunki końca gry
+            // --- SEKRECYJNY PUNKT: KONIEC GRY ---
             if (timeLeft <= 0 || playerHit) {
                 state = GAME_OVER;
+
+                // Natychmiast wyciszamy dźwięk silnika (thrust) i przeładowania gracza!
+                player.stopSounds();
+
                 ScoreManager::save(playerNick, score, dateString);
 
                 std::stringstream ss;
@@ -162,98 +194,115 @@ int main() {
                 gameOverText.setOrigin(tr.width / 2.f, tr.height / 2.f);
                 gameOverText.setPosition(640.f, 360.f);
             }
+            // ZMIANA: Wykonujemy resztę logiki TYLKO wtedy, gdy gra się nie zakończyła!
+            else {
+                // Górny pasek i amunicja
+                std::stringstream ssUI;
+                ssUI << "GRACZ: " << playerNick << "\nPUNKTY: " << score << "\nCZAS: " << (int)timeLeft << "s";
 
-            // Górny pasek
-            std::stringstream ssUI;
-            ssUI << "GRACZ: " << playerNick << "\nPUNKTY: " << score << "\nCZAS: " << (int)timeLeft << "s";
-            uiText.setString(ssUI.str());
-
-            player.update(&window);
-
-            // Strzelanie
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && player.canShoot()) {
-                score -= 5; // Każdy strzał kosztuje 5 pkt (balans gry)
-                bullets.push_back(player.shoot(&texBullet));
-            }
-
-            // Aktualizacja pocisków i usuwanie tych poza ekranem
-            for (int i = 0; i < bullets.size(); i++) {
-                bullets[i]->update();
-                if (bullets[i]->isOutOfBounds(window)) {
-                    delete bullets[i];
-                    bullets.erase(bullets.begin() + i--);
+                if (player.isReloading()) {
+                    ssUI << "\nAMUNICJA: PRZELADOWYWANIE...";
+                } else {
+                    ssUI << "\nAMUNICJA: " << player.getAmmo() << " / " << player.getAmmoMax();
                 }
-            }
+                uiText.setString(ssUI.str());
 
-            // NOWE: SYSTEM SPAWNOWANIA CZASÓWEK
-            // Czekamy 600 klatek (czyli równe 10 sekund przy 60 fps)
-            if (++timeBonusSpawnTimer >= 600) {
-                // Pojawia się w obszarze bezpiecznym od krawędzi (50 px do 1230 px)
-                float px = rand() % 1180 + 50.f;
-                float py = rand() % 620 + 50.f;
-                timeBonuses.push_back(new TimeBonus(&texBonus, px, py));
-                timeBonusSpawnTimer = 0;
-            }
+                player.update(&window);
 
-            // NOWE: AKTUALIZACJA I WYKRYWANIE CZASÓWEK
-            for (int i = 0; i < timeBonuses.size(); i++) {
-                timeBonuses[i]->update();
-
-                // Jeżeli gracz najedzie na czasówkę (Kolizja)
-                if (timeBonuses[i]->getBounds().intersects(player.getBounds())) {
-                    gameTimeMax += 15.f; // Dodajemy 15s poprzez zwiększenie marginesu
-                    delete timeBonuses[i];
-                    timeBonuses.erase(timeBonuses.begin() + i--);
-                    continue; // Przejście do następnego bonusu w pętli
+                // Strzelanie
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && player.canShoot()) {
+                    bullets.push_back(player.shoot(&texBullet));
                 }
 
-                // Usuwanie z mapy po 7 sekundach jeśli nie zbierze
-                if (timeBonuses[i]->isExpired()) {
-                    delete timeBonuses[i];
-                    timeBonuses.erase(timeBonuses.begin() + i--);
-                }
-            }
-
-            // SYSTEM SPAWNOWANIA ASTEROID
-            if (++spawnTimer >= 35) {
-                float px, py, dx, dy;
-                int side = rand() % 4;
-                // 0: Góra, 1: Dół, 2: Lewo, 3: Prawo
-                if (side == 0) { px = rand() % 1280; py = -50.f; dx = (rand() % 100 - 50) / 50.f; dy = 1.f; }
-                else if (side == 1) { px = rand() % 1280; py = 770.f; dx = (rand() % 100 - 50) / 50.f; dy = -1.f; }
-                else if (side == 2) { px = -50.f; py = rand() % 720; dx = 1.f; dy = (rand() % 100 - 50) / 50.f; }
-                else { px = 1330.f; py = rand() % 720; dx = -1.f; dy = (rand() % 100 - 50) / 50.f; }
-
-                float speed = 2.f + static_cast<float>(rand() % 20) / 10.f;
-                asteroids.push_back(new Asteroid(&texAst, px, py, dx, dy, speed));
-                spawnTimer = 0;
-            }
-
-            // Kolizje i aktualizacja asteroid
-            for (int i = 0; i < asteroids.size(); i++) {
-                asteroids[i]->update();
-
-                // Kolizja pocisk-asteroida
-                for (int j = 0; j < bullets.size(); j++) {
-                    if (asteroids[i]->getBounds().intersects(bullets[j]->getBounds())) {
-                        score += 10;
-                        delete asteroids[i]; asteroids.erase(asteroids.begin() + i--);
-                        delete bullets[j]; bullets.erase(bullets.begin() + j);
-                        goto next_ast; // Przejdź do kolejnej asteroidy (ta już nie istnieje)
+                // Aktualizacja pocisków i usuwanie tych poza ekranem
+                for (int i = 0; i < bullets.size(); i++) {
+                    bullets[i]->update();
+                    if (bullets[i]->isOutOfBounds(window)) {
+                        delete bullets[i];
+                        bullets.erase(bullets.begin() + i--);
                     }
                 }
 
-                // Kolizja gracz-asteroida
-                if (asteroids[i]->getBounds().intersects(player.getBounds())) {
-                    playerHit = true;
+                // SYSTEM SPAWNOWANIA CZASÓWEK
+                if (++timeBonusSpawnTimer >= 600) {
+                    float px = rand() % 1180 + 50.f;
+                    float py = rand() % 620 + 50.f;
+                    timeBonuses.push_back(new TimeBonus(&texBonus, px, py));
+                    timeBonusSpawnTimer = 0;
                 }
 
-                // Usuwanie asteroid poza ekranem
-                if (asteroids[i]->isOutOfBounds(window)) {
-                    delete asteroids[i];
-                    asteroids.erase(asteroids.begin() + i--);
+                // AKTUALIZACJA I WYKRYWANIE CZASÓWEK
+                for (int i = 0; i < timeBonuses.size(); i++) {
+                    timeBonuses[i]->update();
+
+                    if (timeBonuses[i]->getBounds().intersects(player.getBounds())) {
+                        gameTimeMax += 15.f;
+                        delete timeBonuses[i];
+                        timeBonuses.erase(timeBonuses.begin() + i--);
+                        continue;
+                    }
+
+                    if (timeBonuses[i]->isExpired()) {
+                        delete timeBonuses[i];
+                        timeBonuses.erase(timeBonuses.begin() + i--);
+                    }
                 }
-            next_ast:;
+
+                // AKTUALIZACJA LOGIKI WYBUCHÓW
+                for (int i = 0; i < explosions.size(); i++) {
+                    explosions[i]->update();
+                    if (explosions[i]->isExpired()) {
+                        delete explosions[i];
+                        explosions.erase(explosions.begin() + i--);
+                    }
+                }
+
+                // SYSTEM SPAWNOWANIA ASTEROID
+                if (++spawnTimer >= 35) {
+                    float px, py, dx, dy;
+                    int side = rand() % 4;
+                    if (side == 0) { px = rand() % 1280; py = -50.f; dx = (rand() % 100 - 50) / 50.f; dy = 1.f; }
+                    else if (side == 1) { px = rand() % 1280; py = 770.f; dx = (rand() % 100 - 50) / 50.f; dy = -1.f; }
+                    else if (side == 2) { px = -50.f; py = rand() % 720; dx = 1.f; dy = (rand() % 100 - 50) / 50.f; }
+                    else { px = 1330.f; py = rand() % 720; dx = -1.f; dy = (rand() % 100 - 50) / 50.f; }
+
+                    float speed = 2.f + static_cast<float>(rand() % 20) / 10.f;
+                    asteroids.push_back(new Asteroid(&texAst, px, py, dx, dy, speed));
+                    spawnTimer = 0;
+                }
+
+                // Kolizje i aktualizacja asteroid
+                for (int i = 0; i < asteroids.size(); i++) {
+                    asteroids[i]->update();
+
+                    // Kolizja pocisk-asteroida
+                    for (int j = 0; j < bullets.size(); j++) {
+                        if (asteroids[i]->getBounds().intersects(bullets[j]->getBounds())) {
+                            score += 10;
+
+                            explosions.push_back(new Explosion(&texExplosion, asteroids[i]->getBounds().left, asteroids[i]->getBounds().top));
+                            explosionSound.play();
+
+                            delete asteroids[i]; asteroids.erase(asteroids.begin() + i--);
+                            delete bullets[j]; bullets.erase(bullets.begin() + j);
+                            goto next_ast;
+                        }
+                    }
+
+                    // Kolizja gracz-asteroida
+                    if (asteroids[i]->getBounds().intersects(player.getBounds())) {
+                        crashSound.play();
+                        explosions.push_back(new Explosion(&texExplosion, player.getPos().x, player.getPos().y));
+                        playerHit = true;
+                    }
+
+                    // Usuwanie asteroid poza ekranem
+                    if (asteroids[i]->isOutOfBounds(window)) {
+                        delete asteroids[i];
+                        asteroids.erase(asteroids.begin() + i--);
+                    }
+                next_ast:;
+                }
             }
         }
 
@@ -268,9 +317,12 @@ int main() {
         }
         else if (state == GAME) {
             for (auto* b : bullets) b->render(&window);
-            for (auto* tb : timeBonuses) tb->render(&window); // NOWE: Rysowanie na ekranie
+            for (auto* tb : timeBonuses) tb->render(&window);
+            for (auto* e : explosions) e->render(&window);
             for (auto* a : asteroids) a->render(&window);
-            player.render(window);
+
+            if (!playerHit) player.render(window);
+
             window.draw(uiText);
         }
         else if (state == HIGHSCORES) window.draw(highscoreListText);
@@ -282,7 +334,8 @@ int main() {
     // CZYSZCZENIE PAMIĘCI
     for (auto* b : bullets) delete b;
     for (auto* a : asteroids) delete a;
-    for (auto* tb : timeBonuses) delete tb; // NOWE: Zapobieganie wyciekowi
+    for (auto* tb : timeBonuses) delete tb;
+    for (auto* e : explosions) delete e;
 
     return 0;
 }

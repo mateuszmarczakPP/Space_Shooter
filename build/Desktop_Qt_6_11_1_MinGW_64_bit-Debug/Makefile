@@ -319,6 +319,30 @@ Bullet.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Bullet.cpp.s
 .PHONY : Bullet.cpp.s
 
+Explosion.obj: Explosion.cpp.obj
+.PHONY : Explosion.obj
+
+# target to build an object file
+Explosion.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Explosion.cpp.obj
+.PHONY : Explosion.cpp.obj
+
+Explosion.i: Explosion.cpp.i
+.PHONY : Explosion.i
+
+# target to preprocess a source file
+Explosion.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Explosion.cpp.i
+.PHONY : Explosion.cpp.i
+
+Explosion.s: Explosion.cpp.s
+.PHONY : Explosion.s
+
+# target to generate assembly for a file
+Explosion.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Space_Shooter.dir\build.make CMakeFiles/Space_Shooter.dir/Explosion.cpp.s
+.PHONY : Explosion.cpp.s
+
 Menu.obj: Menu.cpp.obj
 .PHONY : Menu.obj
 
@@ -466,6 +490,9 @@ help:
 	@echo ... Bullet.obj
 	@echo ... Bullet.i
 	@echo ... Bullet.s
+	@echo ... Explosion.obj
+	@echo ... Explosion.i
+	@echo ... Explosion.s
 	@echo ... Menu.obj
 	@echo ... Menu.i
 	@echo ... Menu.s

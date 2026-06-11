@@ -15,9 +15,15 @@ TimeBonus::TimeBonus(sf::Texture* texture, float pos_x, float pos_y) {
 
 void TimeBonus::update() {
     this->lifetimeFrames++;
-    
-    // Efekt wizualny: pulsowanie (skalowanie) i obrót
-    float scale = 1.0f + 0.15f * std::sin(this->lifetimeFrames * 0.1f);
+
+    // BAZOWA SKALA (0.15f = 15% wielkości obrazka).
+    // Zmniejsz tę wartość (np. do 0.1f), jeśli nadal będzie za duża,
+    // lub zwiększ (np. do 0.25f), jeśli będzie za mała!
+    float targetSize = 0.35f;
+
+    // Efekt wizualny: skalowanie (pulsowanie) wokół naszej małej skali i obrót
+    float scale = targetSize + 0.03f * std::sin(this->lifetimeFrames * 0.1f);
+
     this->shape.setScale(scale, scale);
     this->shape.rotate(2.0f);
 }
