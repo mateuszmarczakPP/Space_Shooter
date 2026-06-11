@@ -1,0 +1,7 @@
+# Ignoruj foldery budowania
+build/
+build-*/
+
+# Ignoruj pliki konfiguracyjne Qt Creatora
+.qtcreator/
+*.user
