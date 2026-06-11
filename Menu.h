@@ -16,6 +16,8 @@ public:
     void moveUp();
     void moveDown();
     int getPressedItem() { return selectedItemIndex; }
+    void updateMouseHover(sf::Vector2f mousePos);
+    int getClickedItem(sf::Vector2f mousePos);
 };
 
 #endif

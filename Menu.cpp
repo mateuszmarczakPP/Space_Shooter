@@ -38,3 +38,38 @@ void Menu::moveDown() {
         menuOptions[selectedItemIndex].setFillColor(sf::Color::Red);
     }
 }
+
+void Menu::updateMouseHover(sf::Vector2f mousePos) {
+    for (int i = 0; i < 3; i++) {
+        sf::FloatRect bounds = menuOptions[i].getGlobalBounds();
+
+        // Powiêkszamy obszar reakcji wokó³ tekstu (margines bezpieczeñstwa)
+        bounds.left -= 30.f;
+        bounds.top -= 15.f;
+        bounds.width += 60.f;
+        bounds.height += 30.f;
+
+        if (bounds.contains(mousePos)) {
+            menuOptions[selectedItemIndex].setFillColor(sf::Color::White);
+            selectedItemIndex = i;
+            menuOptions[selectedItemIndex].setFillColor(sf::Color::Red);
+        }
+    }
+}
+
+int Menu::getClickedItem(sf::Vector2f mousePos) {
+    for (int i = 0; i < 3; i++) {
+        sf::FloatRect bounds = menuOptions[i].getGlobalBounds();
+
+        // Powiêkszamy obszar reakcji równie¿ dla klikniêcia
+        bounds.left -= 30.f;
+        bounds.top -= 15.f;
+        bounds.width += 60.f;
+        bounds.height += 30.f;
+
+        if (bounds.contains(mousePos)) {
+            return i;
+        }
+    }
+    return -1;
+}

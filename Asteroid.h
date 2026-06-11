@@ -15,6 +15,9 @@ public:
     void render(sf::RenderTarget* target);
     const sf::FloatRect getBounds() const;
     bool isOutOfBounds(const sf::RenderTarget& target) const;
+
+    // Funkcja odpowiedzialna za zderzenia między asteroidami
+    void collideWith(Asteroid* other);
 };
 
 #endif

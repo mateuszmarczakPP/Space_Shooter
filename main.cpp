@@ -22,8 +22,10 @@ int main() {
     // Inicjalizacja generatora liczb losowych
     srand(static_cast<unsigned>(time(NULL)));
 
-    // KONFIGURACJA OKNA
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Space Shooter Pro", sf::Style::Close | sf::Style::Titlebar);
+    // KONFIGURACJA OKNA (Pełny ekran + skalowanie)
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Space Shooter Pro", sf::Style::Fullscreen);
+    sf::View view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f)); // Gra wymusza wewnętrzną przestrzeń 1280x720
+    window.setView(view);
     window.setFramerateLimit(60); // Stałe 60 klatek na sekundę
 
     // ŁADOWANIE ZASOBÓW
@@ -78,6 +80,13 @@ int main() {
     sf::Text highscoreListText("", mainFont, 25);
     highscoreListText.setPosition(450.f, 100.f);
 
+    // Tworzenie graficznego przycisku powrotu dla tabeli wyników
+    sf::Text backButtonText("[ POWROT ]", mainFont, 35);
+    backButtonText.setFillColor(sf::Color::White);
+    sf::FloatRect backBounds = backButtonText.getLocalBounds();
+    backButtonText.setOrigin(backBounds.left + backBounds.width / 2.0f, backBounds.top + backBounds.height / 2.0f);
+    backButtonText.setPosition(640.f, 630.f); // Wyśrodkowany na dole ekranu
+
     // INICJALIZACJA OBIEKTÓW I ZMIENNYCH
     GameState state = MENU;
     Menu menu(1280.f, 720.f, mainFont);
@@ -111,21 +120,46 @@ int main() {
             if (event.type == sf::Event::Closed) window.close();
 
             // OBSŁUGA MENU GŁÓWNEGO
-            if (state == MENU && event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Up) menu.moveUp();
-                if (event.key.code == sf::Keyboard::Down) menu.moveDown();
-                if (event.key.code == sf::Keyboard::Enter) {
-                    int choice = menu.getPressedItem();
-                    if (choice == 0) { // START
-                        state = NICKNAME_INPUT;
-                        playerNick = "";
-                        inputNickText.setString("");
+            if (state == MENU) {
+                // Konwersja pozycji myszy z monitora na układ współrzędnych naszej gry
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+                // Aktualizuj podświetlenie tekstu jeśli najeżdża myszka
+                menu.updateMouseHover(mousePos);
+
+                // --- OBSŁUGA KLIKNIĘCIA MYSZKĄ ---
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    int choice = menu.getClickedItem(mousePos);
+                    if (choice != -1) {
+                        if (choice == 0) { // START
+                            state = NICKNAME_INPUT;
+                            playerNick = "";
+                            inputNickText.setString("");
+                        }
+                        if (choice == 1) { // WYNIKI
+                            state = HIGHSCORES;
+                            highscoreListText.setString("TOP 10 WYNIKOW:\n\n" + ScoreManager::loadAll());
+                        }
+                        if (choice == 2) window.close(); // WYJŚCIE
                     }
-                    if (choice == 1) { // WYNIKI
-                        state = HIGHSCORES;
-                        highscoreListText.setString("TOP 10 WYNIKOW:\n\n" + ScoreManager::loadAll() + "\n[ESC] POWROT");
+                }
+                // --- OBSŁUGA KLAWIATURY ---
+                else if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Up) menu.moveUp();
+                    if (event.key.code == sf::Keyboard::Down) menu.moveDown();
+                    if (event.key.code == sf::Keyboard::Enter) {
+                        int choice = menu.getPressedItem();
+                        if (choice == 0) {
+                            state = NICKNAME_INPUT;
+                            playerNick = "";
+                            inputNickText.setString("");
+                        }
+                        if (choice == 1) {
+                            state = HIGHSCORES;
+                            highscoreListText.setString("TOP 10 WYNIKOW:\n\n" + ScoreManager::loadAll());
+                        }
+                        if (choice == 2) window.close();
                     }
-                    if (choice == 2) window.close(); // WYJSCIE
                 }
             }
 
@@ -165,9 +199,39 @@ int main() {
                 inputNickText.setString(playerNick + "_");
             }
 
-            // POWRÓT DO MENU
-            else if ((state == GAME_OVER || state == HIGHSCORES) && event.type == sf::Event::KeyPressed) {
+            // POWRÓT Z GAME OVER
+            else if (state == GAME_OVER && event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape) state = MENU;
+            }
+
+            // OBSŁUGA MYSZKI I KLAWIATURY W TABELI WYNIKÓW
+            else if (state == HIGHSCORES) {
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                sf::FloatRect bounds = backButtonText.getGlobalBounds();
+
+                // Łatwe najeżdżanie – powiększamy obszar aktywnego przycisku powrotu
+                bounds.left -= 30.f;
+                bounds.top -= 15.f;
+                bounds.width += 60.f;
+                bounds.height += 30.f;
+
+                // Efekt podświetlenia (Hover)
+                if (bounds.contains(mousePos)) {
+                    backButtonText.setFillColor(sf::Color::Red);
+                } else {
+                    backButtonText.setFillColor(sf::Color::White);
+                }
+
+                // Kliknięcie myszką w przycisk powrotu
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    if (bounds.contains(mousePos)) {
+                        state = MENU;
+                    }
+                }
+                // Klasyczny powrót za pomocą ESC
+                else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    state = MENU;
+                }
             }
         }
 
@@ -271,6 +335,14 @@ int main() {
                     spawnTimer = 0;
                 }
 
+                // --- NOWE: ODBIJANIE ASTEROID OD SIEBIE ---
+                // Podwójna pętla sprawdza każdą asteroidę z każdą inną
+                for (int i = 0; i < asteroids.size(); i++) {
+                    for (int j = i + 1; j < asteroids.size(); j++) {
+                        asteroids[i]->collideWith(asteroids[j]);
+                    }
+                }
+
                 // Kolizje i aktualizacja asteroid
                 for (int i = 0; i < asteroids.size(); i++) {
                     asteroids[i]->update();
@@ -325,7 +397,10 @@ int main() {
 
             window.draw(uiText);
         }
-        else if (state == HIGHSCORES) window.draw(highscoreListText);
+        else if (state == HIGHSCORES) {
+            window.draw(highscoreListText);
+            window.draw(backButtonText); // Rysujemy przycisk powrotu
+        }
         else if (state == GAME_OVER) window.draw(gameOverText);
 
         window.display();
