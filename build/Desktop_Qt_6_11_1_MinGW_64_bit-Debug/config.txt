@@ -1,5 +1,0 @@
-acceleration 5000
-drag 0.9
-maxVelocity 10.0
-rotationSpeed 4.0
-shootTimerMax 30
