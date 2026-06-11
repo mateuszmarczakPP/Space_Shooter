@@ -28,8 +28,6 @@ add_executable(Space_Shooter
     ScoreManager.cpp ScoreManager.h
     TimeBonus.cpp TimeBonus.h
     Explosion.cpp Explosion.h
-    .gitignore.txt
-    .gitignore.txt
 )
 
 target_link_libraries(Space_Shooter PRIVATE
@@ -56,6 +54,13 @@ file(COPY
     ${CMAKE_CURRENT_SOURCE_DIR}/reload.wav
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 )
+if(TARGET sfml-audio)
+    add_custom_command(TARGET Space_Shooter POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll"
+        "$<TARGET_FILE_DIR:Space_Shooter>"
+    )
+endif()
 
 if(WIN32 AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     set_target_properties(Space_Shooter PROPERTIES WIN32_EXECUTABLE TRUE)
