@@ -1,7 +1,9 @@
 #include "Asteroid.h"
 #include <cmath> // Wymagane do obliczania odległości (pierwiastków)
 
-Asteroid::Asteroid(sf::Texture* texture, float pos_x, float pos_y, float dir_x, float dir_y, float speed) {
+Asteroid::Asteroid(
+    sf::Texture *texture, float pos_x, float pos_y, float dir_x, float dir_y, float speed)
+{
     this->shape.setTexture(*texture);
     this->shape.setPosition(pos_x, pos_y);
     this->shape.setScale(1.0f, 1.0f);
@@ -11,27 +13,32 @@ Asteroid::Asteroid(sf::Texture* texture, float pos_x, float pos_y, float dir_x, 
     this->movementSpeed = speed;
 }
 
-void Asteroid::update() {
+void Asteroid::update()
+{
     this->shape.move(this->direction * this->movementSpeed);
     this->shape.rotate(1.2f);
 }
 
-void Asteroid::render(sf::RenderTarget* target) {
+void Asteroid::render(sf::RenderTarget *target)
+{
     target->draw(this->shape);
 }
 
-const sf::FloatRect Asteroid::getBounds() const {
+const sf::FloatRect Asteroid::getBounds() const
+{
     return this->shape.getGlobalBounds();
 }
 
-bool Asteroid::isOutOfBounds(const sf::RenderTarget& target) const {
+bool Asteroid::isOutOfBounds(const sf::RenderTarget &target) const
+{
     sf::Vector2f pos = this->shape.getPosition();
-    return (pos.y > target.getSize().y + 150.f || pos.y < -150.f ||
-            pos.x < -150.f || pos.x > target.getSize().x + 150.f);
+    return (pos.y > target.getSize().y + 150.f || pos.y < -150.f || pos.x < -150.f
+            || pos.x > target.getSize().x + 150.f);
 }
 
 // LOGIKA ZDERZEŃ MIĘDZY ASTEROIDAMI
-void Asteroid::collideWith(Asteroid* other) {
+void Asteroid::collideWith(Asteroid *other)
+{
     sf::Vector2f pos1 = this->shape.getPosition();
     sf::Vector2f pos2 = other->shape.getPosition();
 
@@ -45,7 +52,6 @@ void Asteroid::collideWith(Asteroid* other) {
 
     // Jeśli odległość jest mniejsza niż suma promieni, to znaczy, że w siebie uderzyły
     if (distance < r1 + r2) {
-
         // Zabezpieczenie na wypadek, gdyby idealnie zrespiły się w tym samym pikselu
         if (distance == 0.f) {
             delta = sf::Vector2f(1.f, 0.f);

@@ -1,7 +1,8 @@
 #include "Explosion.h"
 #include <cmath>
 
-Explosion::Explosion(sf::Texture* texture, float pos_x, float pos_y) {
+Explosion::Explosion(sf::Texture *texture, float pos_x, float pos_y)
+{
     this->shape.setTexture(*texture);
     this->shape.setPosition(pos_x, pos_y);
 
@@ -14,10 +15,12 @@ Explosion::Explosion(sf::Texture* texture, float pos_x, float pos_y) {
     this->maxLifetimeFrames = 30;
 }
 
-void Explosion::update() {
+void Explosion::update()
+{
     this->lifetimeFrames++;
 
-    float progress = static_cast<float>(this->lifetimeFrames) / static_cast<float>(this->maxLifetimeFrames);
+    float progress = static_cast<float>(this->lifetimeFrames)
+                     / static_cast<float>(this->maxLifetimeFrames);
 
     // NOWE: EFEKT WIZUALNY WYBUCHU
     // 1. Skalowanie: Wybuch rośnie szybko na początku
@@ -31,10 +34,12 @@ void Explosion::update() {
     this->shape.setColor(sf::Color(currentColor.r, currentColor.g, currentColor.b, opacity));
 }
 
-void Explosion::render(sf::RenderTarget* target) {
+void Explosion::render(sf::RenderTarget *target)
+{
     target->draw(this->shape);
 }
 
-bool Explosion::isExpired() const {
+bool Explosion::isExpired() const
+{
     return this->lifetimeFrames >= this->maxLifetimeFrames;
 }

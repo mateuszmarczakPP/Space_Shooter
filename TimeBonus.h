@@ -3,16 +3,17 @@
 
 #include <SFML/Graphics.hpp>
 
-class TimeBonus {
+class TimeBonus
+{
 private:
     sf::Sprite shape;
     int lifetimeFrames;
     int maxLifetimeFrames;
 
 public:
-    TimeBonus(sf::Texture* texture, float pos_x, float pos_y);
+    TimeBonus(sf::Texture *texture, float pos_x, float pos_y);
     void update();
-    void render(sf::RenderTarget* target);
+    void render(sf::RenderTarget *target);
     const sf::FloatRect getBounds() const;
     bool isExpired() const;
 };

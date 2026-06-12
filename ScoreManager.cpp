@@ -1,22 +1,25 @@
 #include "ScoreManager.h"
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
 #include <sstream>
+#include <vector>
 
 //struktura pomocnicza do sortowania
-struct ScoreEntry {
+struct ScoreEntry
+{
     std::string name;
     int score;
     std::string time;
 };
 
-//funkcja porównuj¹ca do sortowania
-bool compareScores(const ScoreEntry& a, const ScoreEntry& b) {
+//funkcja porï¿½wnujï¿½ca do sortowania
+bool compareScores(const ScoreEntry &a, const ScoreEntry &b)
+{
     return a.score > b.score;
 }
 
-void ScoreManager::save(std::string name, int score, std::string time) {
+void ScoreManager::save(std::string name, int score, std::string time)
+{
     std::ofstream file("highscores.txt", std::ios::app);
     if (file.is_open()) {
         file << name << " " << score << " " << time << "\n";
@@ -24,7 +27,8 @@ void ScoreManager::save(std::string name, int score, std::string time) {
     }
 }
 
-std::string ScoreManager::loadAll() {
+std::string ScoreManager::loadAll()
+{
     std::vector<ScoreEntry> scores;
     std::ifstream file("highscores.txt");
     std::string name;
@@ -33,11 +37,12 @@ std::string ScoreManager::loadAll() {
 
     //wczytywanie
     while (file >> name >> score >> time) {
-        scores.push_back({ name, score, time });
+        scores.push_back({name, score, time});
     }
     file.close();
 
-    if (scores.empty()) return "BRAK WYNIKOW";
+    if (scores.empty())
+        return "BRAK WYNIKOW";
 
     //sortowanie
     std::sort(scores.begin(), scores.end(), compareScores);
@@ -47,7 +52,8 @@ std::string ScoreManager::loadAll() {
     int limit = (scores.size() < 10) ? scores.size() : 10;
 
     for (int i = 0; i < limit; i++) {
-        ss << i + 1 << ". " << scores[i].name << " : " << scores[i].score << " : " << scores[i].time << "\n";
+        ss << i + 1 << ". " << scores[i].name << " : " << scores[i].score << " : " << scores[i].time
+           << "\n";
     }
 
     return ss.str();

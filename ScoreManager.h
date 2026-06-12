@@ -3,7 +3,8 @@
 
 #include <string>
 
-class ScoreManager {
+class ScoreManager
+{
 public:
     static void save(std::string name, int score, std::string time);
 

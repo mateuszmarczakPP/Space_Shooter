@@ -1,29 +1,33 @@
 #include "Menu.h"
 
-Menu::Menu(float width, float height, sf::Font &font) {
-
-    std::string options[] = { "GRAJ", "LISTA WYNIKOW", "WYJDZ" };
+Menu::Menu(float width, float height, sf::Font &font)
+{
+    std::string options[] = {"GRAJ", "LISTA WYNIKOW", "WYJDZ"};
 
     for (int i = 0; i < 3; i++) {
         menuOptions[i].setFont(font);
         menuOptions[i].setString(options[i]);
         menuOptions[i].setCharacterSize(50);
-        menuOptions[i].setFillColor(i == 0 ? sf::Color::Red : sf::Color::White); // Pierwsza opcja podœwietlona
+        menuOptions[i].setFillColor(i == 0 ? sf::Color::Red
+                                           : sf::Color::White); // Pierwsza opcja podï¿½wietlona
 
         sf::FloatRect textRect = menuOptions[i].getLocalBounds();
-        menuOptions[i].setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+        menuOptions[i].setOrigin(textRect.left + textRect.width / 2.0f,
+                                 textRect.top + textRect.height / 2.0f);
         menuOptions[i].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * (i + 1)));
     }
     selectedItemIndex = 0;
 }
 
-void Menu::draw(sf::RenderWindow& window) {
+void Menu::draw(sf::RenderWindow &window)
+{
     for (int i = 0; i < 3; i++) {
         window.draw(menuOptions[i]);
     }
 }
 
-void Menu::moveUp() {
+void Menu::moveUp()
+{
     if (selectedItemIndex - 1 >= 0) {
         menuOptions[selectedItemIndex].setFillColor(sf::Color::White);
         selectedItemIndex--;
@@ -31,7 +35,8 @@ void Menu::moveUp() {
     }
 }
 
-void Menu::moveDown() {
+void Menu::moveDown()
+{
     if (selectedItemIndex + 1 < 3) {
         menuOptions[selectedItemIndex].setFillColor(sf::Color::White);
         selectedItemIndex++;
@@ -39,11 +44,12 @@ void Menu::moveDown() {
     }
 }
 
-void Menu::updateMouseHover(sf::Vector2f mousePos) {
+void Menu::updateMouseHover(sf::Vector2f mousePos)
+{
     for (int i = 0; i < 3; i++) {
         sf::FloatRect bounds = menuOptions[i].getGlobalBounds();
 
-        // Powiêkszamy obszar reakcji wokó³ tekstu (margines bezpieczeñstwa)
+        // Powiï¿½kszamy obszar reakcji wokï¿½ï¿½ tekstu (margines bezpieczeï¿½stwa)
         bounds.left -= 30.f;
         bounds.top -= 15.f;
         bounds.width += 60.f;
@@ -57,11 +63,12 @@ void Menu::updateMouseHover(sf::Vector2f mousePos) {
     }
 }
 
-int Menu::getClickedItem(sf::Vector2f mousePos) {
+int Menu::getClickedItem(sf::Vector2f mousePos)
+{
     for (int i = 0; i < 3; i++) {
         sf::FloatRect bounds = menuOptions[i].getGlobalBounds();
 
-        // Powiêkszamy obszar reakcji równie¿ dla klikniêcia
+        // Powiï¿½kszamy obszar reakcji rï¿½wnieï¿½ dla klikniï¿½cia
         bounds.left -= 30.f;
         bounds.top -= 15.f;
         bounds.width += 60.f;

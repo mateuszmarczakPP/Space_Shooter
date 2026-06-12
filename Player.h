@@ -2,8 +2,9 @@
 #define PLAYER_HPP
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp> // <- NOWE: Wymagane dla dźwięków gracza
+#include <SFML/Audio.hpp>
 #include <cmath>
+#include <vector> // <- NOWE: Wymagane do przechowywania cząsteczek
 #include "Bullet.h"
 
 class Player {
@@ -29,7 +30,7 @@ private:
     int reloadTimer;
     int reloadTimerMax;
 
-    // --- NOWE: AUDIO GRACZA ---
+    // AUDIO GRACZA
     sf::SoundBuffer shootBuffer;
     sf::Sound shootSound;
     sf::SoundBuffer thrustBuffer;
@@ -37,9 +38,18 @@ private:
     sf::SoundBuffer reloadBuffer;
     sf::Sound reloadSound;
 
+    // --- NOWE: SYSTEM CZĄSTECZEK (DYM Z SILNIKA) ---
+    struct ExhaustParticle {
+        sf::RectangleShape shape;
+        sf::Vector2f velocity;
+        int lifetime;
+        int maxLifetime;
+    };
+    std::vector<ExhaustParticle> exhaustParticles;
+
     void initTexture();
     void initSprite();
-    void initAudio(); // <- NOWE: Inicjalizacja audio
+    void initAudio();
 
 public:
     Player();
@@ -65,12 +75,11 @@ public:
     }
     void resetPosition();
 
-    // GETTERY I METODY DLA AMUNICJI
     int getAmmo() const;
     int getAmmoMax() const;
     bool isReloading() const;
     void startReload();
-    void stopSounds(); // <- NOWE: Zatrzymanie zapętlonych dźwięków
+    void stopSounds();
 };
 
 #endif

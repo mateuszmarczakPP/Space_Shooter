@@ -1,30 +1,34 @@
-﻿#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <vector>
+﻿#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 #include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
+#include <vector>
 
 // Klasy
-#include "Player.h"
 #include "Asteroid.h"
 #include "Bullet.h"
+#include "Explosion.h"
 #include "Menu.h"
+#include "Player.h"
 #include "ScoreManager.h"
 #include "TimeBonus.h"
-#include "Explosion.h"
 
 // Typ enum określający w jakim stanie znajduje się gra
 enum GameState { MENU, NICKNAME_INPUT, GAME, HIGHSCORES, GAME_OVER };
 
-int main() {
+int main()
+{
     // Inicjalizacja generatora liczb losowych
     srand(static_cast<unsigned>(time(NULL)));
 
     // KONFIGURACJA OKNA (Pełny ekran + skalowanie)
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Space Shooter Pro", sf::Style::Fullscreen);
-    sf::View view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f)); // Gra wymusza wewnętrzną przestrzeń 1280x720
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(),
+                            "Space Shooter Pro",
+                            sf::Style::Fullscreen);
+    sf::View view(
+        sf::FloatRect(0.f, 0.f, 1280.f, 720.f)); // Gra wymusza wewnętrzną przestrzeń 1280x720
     window.setView(view);
     window.setFramerateLimit(60); // Stałe 60 klatek na sekundę
 
@@ -84,17 +88,18 @@ int main() {
     sf::Text backButtonText("[ POWROT ]", mainFont, 35);
     backButtonText.setFillColor(sf::Color::White);
     sf::FloatRect backBounds = backButtonText.getLocalBounds();
-    backButtonText.setOrigin(backBounds.left + backBounds.width / 2.0f, backBounds.top + backBounds.height / 2.0f);
+    backButtonText.setOrigin(backBounds.left + backBounds.width / 2.0f,
+                             backBounds.top + backBounds.height / 2.0f);
     backButtonText.setPosition(640.f, 630.f); // Wyśrodkowany na dole ekranu
 
     // INICJALIZACJA OBIEKTÓW I ZMIENNYCH
     GameState state = MENU;
     Menu menu(1280.f, 720.f, mainFont);
     Player player;
-    std::vector<Bullet*> bullets;
-    std::vector<Asteroid*> asteroids;
-    std::vector<TimeBonus*> timeBonuses;
-    std::vector<Explosion*> explosions;
+    std::vector<Bullet *> bullets;
+    std::vector<Asteroid *> asteroids;
+    std::vector<TimeBonus *> timeBonuses;
+    std::vector<Explosion *> explosions;
 
     std::string playerNick = "";
     int score = 0;
@@ -117,7 +122,8 @@ int main() {
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::Closed)
+                window.close();
 
             // OBSŁUGA MENU GŁÓWNEGO
             if (state == MENU) {
@@ -128,7 +134,8 @@ int main() {
                 menu.updateMouseHover(mousePos);
 
                 // --- OBSŁUGA KLIKNIĘCIA MYSZKĄ ---
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                if (event.type == sf::Event::MouseButtonPressed
+                    && event.mouseButton.button == sf::Mouse::Left) {
                     int choice = menu.getClickedItem(mousePos);
                     if (choice != -1) {
                         if (choice == 0) { // START
@@ -138,15 +145,19 @@ int main() {
                         }
                         if (choice == 1) { // WYNIKI
                             state = HIGHSCORES;
-                            highscoreListText.setString("TOP 10 WYNIKOW:\n\n" + ScoreManager::loadAll());
+                            highscoreListText.setString("TOP 10 WYNIKOW:\n\n"
+                                                        + ScoreManager::loadAll());
                         }
-                        if (choice == 2) window.close(); // WYJŚCIE
+                        if (choice == 2)
+                            window.close(); // WYJŚCIE
                     }
                 }
                 // --- OBSŁUGA KLAWIATURY ---
                 else if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::Up) menu.moveUp();
-                    if (event.key.code == sf::Keyboard::Down) menu.moveDown();
+                    if (event.key.code == sf::Keyboard::Up)
+                        menu.moveUp();
+                    if (event.key.code == sf::Keyboard::Down)
+                        menu.moveDown();
                     if (event.key.code == sf::Keyboard::Enter) {
                         int choice = menu.getPressedItem();
                         if (choice == 0) {
@@ -156,9 +167,11 @@ int main() {
                         }
                         if (choice == 1) {
                             state = HIGHSCORES;
-                            highscoreListText.setString("TOP 10 WYNIKOW:\n\n" + ScoreManager::loadAll());
+                            highscoreListText.setString("TOP 10 WYNIKOW:\n\n"
+                                                        + ScoreManager::loadAll());
                         }
-                        if (choice == 2) window.close();
+                        if (choice == 2)
+                            window.close();
                     }
                 }
             }
@@ -166,9 +179,9 @@ int main() {
             // OBSŁUGA WPISYWANIA NICKU
             else if (state == NICKNAME_INPUT && event.type == sf::Event::TextEntered) {
                 if (event.text.unicode == 8) {
-                    if (!playerNick.empty()) playerNick.pop_back();
-                }
-                else if (event.text.unicode == 13) {
+                    if (!playerNick.empty())
+                        playerNick.pop_back();
+                } else if (event.text.unicode == 13) {
                     if (!playerNick.empty()) {
                         state = GAME;
 
@@ -183,17 +196,20 @@ int main() {
                         player.resetPosition();
 
                         // Czyszczenie obiektów
-                        for (auto* a : asteroids) delete a;
+                        for (auto *a : asteroids)
+                            delete a;
                         asteroids.clear();
-                        for (auto* b : bullets) delete b;
+                        for (auto *b : bullets)
+                            delete b;
                         bullets.clear();
-                        for (auto* tb : timeBonuses) delete tb;
+                        for (auto *tb : timeBonuses)
+                            delete tb;
                         timeBonuses.clear();
-                        for (auto* e : explosions) delete e;
+                        for (auto *e : explosions)
+                            delete e;
                         explosions.clear();
                     }
-                }
-                else if (event.text.unicode < 128 && playerNick.length() < 12) {
+                } else if (event.text.unicode < 128 && playerNick.length() < 12) {
                     playerNick += static_cast<char>(event.text.unicode);
                 }
                 inputNickText.setString(playerNick + "_");
@@ -201,7 +217,8 @@ int main() {
 
             // POWRÓT Z GAME OVER
             else if (state == GAME_OVER && event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Escape) state = MENU;
+                if (event.key.code == sf::Keyboard::Escape)
+                    state = MENU;
             }
 
             // OBSŁUGA MYSZKI I KLAWIATURY W TABELI WYNIKÓW
@@ -223,13 +240,15 @@ int main() {
                 }
 
                 // Kliknięcie myszką w przycisk powrotu
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                if (event.type == sf::Event::MouseButtonPressed
+                    && event.mouseButton.button == sf::Mouse::Left) {
                     if (bounds.contains(mousePos)) {
                         state = MENU;
                     }
                 }
                 // Klasyczny powrót za pomocą ESC
-                else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                else if (event.type == sf::Event::KeyPressed
+                         && event.key.code == sf::Keyboard::Escape) {
                     state = MENU;
                 }
             }
@@ -249,8 +268,8 @@ int main() {
                 ScoreManager::save(playerNick, score, dateString);
 
                 std::stringstream ss;
-                ss << (playerHit ? "STATEK ZNISZCZONY!" : "KONIEC CZASU!")
-                   << "\nWYNIK: " << score << "\n\nESC - MENU";
+                ss << (playerHit ? "STATEK ZNISZCZONY!" : "KONIEC CZASU!") << "\nWYNIK: " << score
+                   << "\n\nESC - MENU";
                 gameOverText.setString(ss.str());
 
                 // Wyśrodkowanie tekstu końca gry
@@ -262,7 +281,8 @@ int main() {
             else {
                 // Górny pasek i amunicja
                 std::stringstream ssUI;
-                ssUI << "GRACZ: " << playerNick << "\nPUNKTY: " << score << "\nCZAS: " << (int)timeLeft << "s";
+                ssUI << "GRACZ: " << playerNick << "\nPUNKTY: " << score
+                     << "\nCZAS: " << (int) timeLeft << "s";
 
                 if (player.isReloading()) {
                     ssUI << "\nAMUNICJA: PRZELADOWYWANIE...";
@@ -325,10 +345,27 @@ int main() {
                 if (++spawnTimer >= 35) {
                     float px, py, dx, dy;
                     int side = rand() % 4;
-                    if (side == 0) { px = rand() % 1280; py = -50.f; dx = (rand() % 100 - 50) / 50.f; dy = 1.f; }
-                    else if (side == 1) { px = rand() % 1280; py = 770.f; dx = (rand() % 100 - 50) / 50.f; dy = -1.f; }
-                    else if (side == 2) { px = -50.f; py = rand() % 720; dx = 1.f; dy = (rand() % 100 - 50) / 50.f; }
-                    else { px = 1330.f; py = rand() % 720; dx = -1.f; dy = (rand() % 100 - 50) / 50.f; }
+                    if (side == 0) {
+                        px = rand() % 1280;
+                        py = -50.f;
+                        dx = (rand() % 100 - 50) / 50.f;
+                        dy = 1.f;
+                    } else if (side == 1) {
+                        px = rand() % 1280;
+                        py = 770.f;
+                        dx = (rand() % 100 - 50) / 50.f;
+                        dy = -1.f;
+                    } else if (side == 2) {
+                        px = -50.f;
+                        py = rand() % 720;
+                        dx = 1.f;
+                        dy = (rand() % 100 - 50) / 50.f;
+                    } else {
+                        px = 1330.f;
+                        py = rand() % 720;
+                        dx = -1.f;
+                        dy = (rand() % 100 - 50) / 50.f;
+                    }
 
                     float speed = 2.f + static_cast<float>(rand() % 20) / 10.f;
                     asteroids.push_back(new Asteroid(&texAst, px, py, dx, dy, speed));
@@ -352,11 +389,15 @@ int main() {
                         if (asteroids[i]->getBounds().intersects(bullets[j]->getBounds())) {
                             score += 10;
 
-                            explosions.push_back(new Explosion(&texExplosion, asteroids[i]->getBounds().left, asteroids[i]->getBounds().top));
+                            explosions.push_back(new Explosion(&texExplosion,
+                                                               asteroids[i]->getBounds().left,
+                                                               asteroids[i]->getBounds().top));
                             explosionSound.play();
 
-                            delete asteroids[i]; asteroids.erase(asteroids.begin() + i--);
-                            delete bullets[j]; bullets.erase(bullets.begin() + j);
+                            delete asteroids[i];
+                            asteroids.erase(asteroids.begin() + i--);
+                            delete bullets[j];
+                            bullets.erase(bullets.begin() + j);
                             goto next_ast;
                         }
                     }
@@ -364,7 +405,8 @@ int main() {
                     // Kolizja gracz-asteroida
                     if (asteroids[i]->getBounds().intersects(player.getBounds())) {
                         crashSound.play();
-                        explosions.push_back(new Explosion(&texExplosion, player.getPos().x, player.getPos().y));
+                        explosions.push_back(
+                            new Explosion(&texExplosion, player.getPos().x, player.getPos().y));
                         playerHit = true;
                     }
 
@@ -382,35 +424,43 @@ int main() {
         window.clear();
         window.draw(background);
 
-        if (state == MENU) menu.draw(window);
+        if (state == MENU)
+            menu.draw(window);
         else if (state == NICKNAME_INPUT) {
             window.draw(promptText);
             window.draw(inputNickText);
-        }
-        else if (state == GAME) {
-            for (auto* b : bullets) b->render(&window);
-            for (auto* tb : timeBonuses) tb->render(&window);
-            for (auto* e : explosions) e->render(&window);
-            for (auto* a : asteroids) a->render(&window);
+        } else if (state == GAME) {
+            for (auto *b : bullets)
+                b->render(&window);
+            for (auto *tb : timeBonuses)
+                tb->render(&window);
+            for (auto *e : explosions)
+                e->render(&window);
+            for (auto *a : asteroids)
+                a->render(&window);
 
-            if (!playerHit) player.render(window);
+            if (!playerHit)
+                player.render(window);
 
             window.draw(uiText);
-        }
-        else if (state == HIGHSCORES) {
+        } else if (state == HIGHSCORES) {
             window.draw(highscoreListText);
             window.draw(backButtonText); // Rysujemy przycisk powrotu
-        }
-        else if (state == GAME_OVER) window.draw(gameOverText);
+        } else if (state == GAME_OVER)
+            window.draw(gameOverText);
 
         window.display();
     }
 
     // CZYSZCZENIE PAMIĘCI
-    for (auto* b : bullets) delete b;
-    for (auto* a : asteroids) delete a;
-    for (auto* tb : timeBonuses) delete tb;
-    for (auto* e : explosions) delete e;
+    for (auto *b : bullets)
+        delete b;
+    for (auto *a : asteroids)
+        delete a;
+    for (auto *tb : timeBonuses)
+        delete tb;
+    for (auto *e : explosions)
+        delete e;
 
     return 0;
 }

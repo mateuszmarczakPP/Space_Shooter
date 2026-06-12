@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib> // Wymagane dla funkcji rand()
 
 Player::Player() {
     this->loadConfig();
@@ -17,26 +18,23 @@ Player::Player() {
 
     this->initTexture();
     this->initSprite();
-    this->initAudio(); // <- NOWE: £adowanie dŸwiêków
+    this->initAudio();
 }
 
 Player::~Player() {}
 
 void Player::initAudio() {
-    // 1. DŸwiêk strza³u
     if (!this->shootBuffer.loadFromFile("shoot.wav"))
         std::cout << "ERROR::PLAYER::Nie mozna wczytac shoot.wav" << std::endl;
     this->shootSound.setBuffer(this->shootBuffer);
-    this->shootSound.setVolume(50.f); // Nieco ciszej, bo strza³ów jest du¿o
+    this->shootSound.setVolume(50.f);
 
-    // 2. DŸwiêk silnika (lotu)
     if (!this->thrustBuffer.loadFromFile("thrust.wav"))
         std::cout << "ERROR::PLAYER::Nie mozna wczytac thrust.wav" << std::endl;
     this->thrustSound.setBuffer(this->thrustBuffer);
-    this->thrustSound.setLoop(true); // Ustalamy, ¿e ten dŸwiêk ma siê zapêtlaæ!
+    this->thrustSound.setLoop(true);
     this->thrustSound.setVolume(50.f);
 
-    // 3. DŸwiêk prze³adowania
     if (!this->reloadBuffer.loadFromFile("reload.wav"))
         std::cout << "ERROR::PLAYER::Nie mozna wczytac reload.wav" << std::endl;
     this->reloadSound.setBuffer(this->reloadBuffer);
@@ -94,7 +92,7 @@ bool Player::canShoot() {
     if (this->shootTimer >= this->shootTimerMax) {
         this->shootTimer = 0;
         this->ammo--;
-        this->shootSound.play(); // <- NOWE: Odtwórz dŸwiêk strza³u
+        this->shootSound.play();
         return true;
     }
     return false;
@@ -107,7 +105,6 @@ Bullet* Player::shoot(sf::Texture* bulletTexture) {
 }
 
 void Player::update(const sf::RenderTarget* target) {
-    // OBS£UGA TIMERA PRZE£ADOWANIA I KLAWISZA R
     if (this->reloading) {
         this->reloadTimer++;
         if (this->reloadTimer >= this->reloadTimerMax) {
@@ -126,11 +123,10 @@ void Player::update(const sf::RenderTarget* target) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) this->sprite.rotate(-this->rotationSpeed);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) this->sprite.rotate(this->rotationSpeed);
 
-    // --- RUCH I POPRAWKA AUDIO DLA SILNIKA ---
+    // --- RUCH I EFEKTY SILNIKA ---
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         this->sprite.setTexture(this->textureThrust);
 
-        // NOWE: Odtwarzaj dŸwiêk silnika tylko jeœli ju¿ nie gra (unikamy j¹kania)
         if (this->thrustSound.getStatus() != sf::Sound::Playing) {
             this->thrustSound.play();
         }
@@ -138,12 +134,67 @@ void Player::update(const sf::RenderTarget* target) {
         float angle = (this->sprite.getRotation() - 90.f) * 3.14159265f / 180.f;
         this->velocity.x += std::cos(angle) * this->acceleration;
         this->velocity.y += std::sin(angle) * this->acceleration;
+
+        // --- TWORZENIE CZÄ„STECZEK DYMU Z SILNIKA ---
+        // Generujemy 2 czÄ…steczki na klatkÄ™ dla gÄ™stszego dymu
+        for (int i = 0; i < 2; i++) {
+            ExhaustParticle p;
+            p.shape.setSize(sf::Vector2f(8.f, 8.f));
+            p.shape.setOrigin(4.f, 4.f);
+
+            // Obliczamy tyÅ‚ statku (przeciwnoÅ›Ä‡ kierunku lotu + przesuniÄ™cie)
+            float backX = this->sprite.getPosition().x - std::cos(angle) * 25.f;
+            float backY = this->sprite.getPosition().y - std::sin(angle) * 25.f;
+
+            // Dodajemy lekki rozrzut (od -4 do +4 pikseli)
+            backX += (rand() % 9 - 4);
+            backY += (rand() % 9 - 4);
+            p.shape.setPosition(backX, backY);
+
+            // PrÄ™dkoÅ›Ä‡ czÄ…steczki (lekko dryfuje do tyÅ‚u)
+            p.velocity.x = -std::cos(angle) * (1.f + (rand() % 10) * 0.1f);
+            p.velocity.y = -std::sin(angle) * (1.f + (rand() % 10) * 0.1f);
+
+            p.maxLifetime = 15 + rand() % 15; // CzÄ…steczka Å¼yje krÃ³tko (ok. pÃ³Å‚ sekundy)
+            p.lifetime = p.maxLifetime;
+
+            // Kolor startowy (Losowy odcieÅ„ ognia: pomaraÅ„czowy/Å¼Ã³Å‚ty)
+            p.shape.setFillColor(sf::Color(255, 150 + rand() % 105, 0, 255));
+
+            this->exhaustParticles.push_back(p);
+        }
+
     } else {
         this->sprite.setTexture(this->textureIdle);
 
-        // NOWE: Zatrzymaj dŸwiêk silnika, gdy puszczamy klawisz W
         if (this->thrustSound.getStatus() == sf::Sound::Playing) {
             this->thrustSound.stop();
+        }
+    }
+
+    // --- AKTUALIZACJA CZÄ„STECZEK DYMU ---
+    for (int i = 0; i < this->exhaustParticles.size(); i++) {
+        this->exhaustParticles[i].shape.move(this->exhaustParticles[i].velocity);
+        this->exhaustParticles[i].lifetime--;
+
+        float progress = static_cast<float>(this->exhaustParticles[i].lifetime) / this->exhaustParticles[i].maxLifetime;
+
+        // Zmniejszanie siÄ™ czÄ…steczki pod koniec Å¼ycia
+        this->exhaustParticles[i].shape.setScale(progress, progress);
+
+        // Magia zmiany koloru: z ognistego na szary dym + zanikanie (przezroczystoÅ›Ä‡)
+        sf::Color c = this->exhaustParticles[i].shape.getFillColor();
+        c.a = static_cast<sf::Uint8>(255 * progress);
+        c.r = static_cast<sf::Uint8>(255 * progress + 80 * (1.0f - progress)); // 80 to odcieÅ„ szarego
+        c.g = static_cast<sf::Uint8>(150 * progress + 80 * (1.0f - progress));
+        c.b = static_cast<sf::Uint8>(0 * progress + 80 * (1.0f - progress));
+
+        this->exhaustParticles[i].shape.setFillColor(c);
+
+        // Usuwanie martwych czÄ…steczek
+        if (this->exhaustParticles[i].lifetime <= 0) {
+            this->exhaustParticles.erase(this->exhaustParticles.begin() + i);
+            i--;
         }
     }
 
@@ -152,7 +203,7 @@ void Player::update(const sf::RenderTarget* target) {
     this->velocity *= this->drag;
     this->sprite.move(this->velocity);
 
-    // BLOKADA WYJŒCIA POZA EKRAN
+    // BLOKADA WYJÅšCIA POZA EKRAN
     sf::FloatRect bounds = this->sprite.getGlobalBounds();
     if (bounds.left < 0.f)
         this->sprite.setPosition(bounds.width / 2.f, this->sprite.getPosition().y);
@@ -164,12 +215,19 @@ void Player::update(const sf::RenderTarget* target) {
         this->sprite.setPosition(this->sprite.getPosition().x, target->getSize().y - bounds.height / 2.f);
 }
 
-void Player::render(sf::RenderTarget& target) { target.draw(this->sprite); }
+void Player::render(sf::RenderTarget& target) {
+    // Rysujemy czÄ…steczki NAJPIERW, aby statek byÅ‚ nad nimi (zasÅ‚aniaÅ‚ je)
+    for (auto& p : this->exhaustParticles) {
+        target.draw(p.shape);
+    }
+    // Rysujemy statek
+    target.draw(this->sprite);
+}
+
 const sf::Vector2f& Player::getPos() const { return this->sprite.getPosition(); }
 float Player::getRotation() const { return this->sprite.getRotation(); }
 
 void Player::stopSounds() {
-    // NOWE: Metoda uciszaj¹ca gracza
     this->thrustSound.stop();
     this->reloadSound.stop();
 }
@@ -183,14 +241,15 @@ void Player::resetPosition() {
     this->ammo = this->ammoMax;
     this->reloading = false;
     this->reloadTimer = 0;
-    this->stopSounds(); // NOWE: Ucisz dŸwiêki przy resecie
+    this->stopSounds();
+    this->exhaustParticles.clear(); // CzyÅ›cimy dym przy resecie gry
 }
 
 void Player::startReload() {
     if (!this->reloading) {
         this->reloading = true;
         this->reloadTimer = 0;
-        this->reloadSound.play(); // <- NOWE: Odtwórz dŸwiêk prze³adowania
+        this->reloadSound.play();
     }
 }
 

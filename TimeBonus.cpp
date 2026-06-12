@@ -1,19 +1,21 @@
 #include "TimeBonus.h"
 #include <cmath>
 
-TimeBonus::TimeBonus(sf::Texture* texture, float pos_x, float pos_y) {
+TimeBonus::TimeBonus(sf::Texture *texture, float pos_x, float pos_y)
+{
     this->shape.setTexture(*texture);
     this->shape.setPosition(pos_x, pos_y);
-    
+
     // Ustawienie na środku obrazka by się ładnie obracał
     sf::FloatRect bounds = this->shape.getLocalBounds();
     this->shape.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-    
+
     this->lifetimeFrames = 0;
     this->maxLifetimeFrames = 420; // 60 klatek * 7 sekund = znika po 7s
 }
 
-void TimeBonus::update() {
+void TimeBonus::update()
+{
     this->lifetimeFrames++;
 
     // BAZOWA SKALA (0.15f = 15% wielkości obrazka).
@@ -28,14 +30,17 @@ void TimeBonus::update() {
     this->shape.rotate(2.0f);
 }
 
-void TimeBonus::render(sf::RenderTarget* target) {
+void TimeBonus::render(sf::RenderTarget *target)
+{
     target->draw(this->shape);
 }
 
-const sf::FloatRect TimeBonus::getBounds() const {
+const sf::FloatRect TimeBonus::getBounds() const
+{
     return this->shape.getGlobalBounds();
 }
 
-bool TimeBonus::isExpired() const {
+bool TimeBonus::isExpired() const
+{
     return this->lifetimeFrames >= this->maxLifetimeFrames;
 }
