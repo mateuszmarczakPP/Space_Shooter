@@ -3,13 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
-#include <vector>
 
-class Menu
-{
+class Menu {
 private:
     int selectedItemIndex;
-    sf::Text menuOptions[3];
+    sf::Text menuOptions[4]; // Zmienione na 4 opcje
+    bool hasSave;
 
 public:
     Menu(float width, float height, sf::Font &font);
@@ -19,6 +18,10 @@ public:
     int getPressedItem() { return selectedItemIndex; }
     void updateMouseHover(sf::Vector2f mousePos);
     int getClickedItem(sf::Vector2f mousePos);
+
+    // NOWE: Funkcje sprawdzające czy jest zapis
+    void checkSave();
+    bool getHasSave() const { return hasSave; }
 };
 
 #endif

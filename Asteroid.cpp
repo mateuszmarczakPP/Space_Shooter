@@ -1,9 +1,7 @@
 #include "Asteroid.h"
 #include <cmath>
 
-Asteroid::Asteroid(
-    sf::Texture *texture, float pos_x, float pos_y, float dir_x, float dir_y, float speed)
-{
+Asteroid::Asteroid(sf::Texture *texture, float pos_x, float pos_y, float dir_x, float dir_y, float speed) {
     this->shape.setTexture(*texture);
     this->shape.setPosition(pos_x, pos_y);
     this->shape.setScale(1.0f, 1.0f);
@@ -11,41 +9,37 @@ Asteroid::Asteroid(
     this->shape.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
     this->direction = sf::Vector2f(dir_x, dir_y);
     this->movementSpeed = speed;
-    this->hp = 1;          // Standardowa asteroida ginie na 1 hita
-    this->pointsValue = 10; // Standardowa wartość punktowa
+    this->hp = 1;
+    this->pointsValue = 10;
 }
 
-void Asteroid::update()
-{
+void Asteroid::update(sf::RenderTarget* target) {
     this->shape.move(this->direction * this->movementSpeed);
     this->shape.rotate(1.2f);
+
+    // Autodestrukcja poza ekranem
+    if (target) {
+        sf::Vector2f pos = this->shape.getPosition();
+        if (pos.y > target->getSize().y + 150.f || pos.y < -150.f || pos.x < -150.f || pos.x > target->getSize().x + 150.f) {
+            this->kill();
+        }
+    }
 }
 
-void Asteroid::render(sf::RenderTarget *target)
-{
-    target->draw(this->shape);
+void Asteroid::render(sf::RenderTarget *target) {
+    if (target) target->draw(this->shape);
 }
 
-const sf::FloatRect Asteroid::getBounds() const
-{
+const sf::FloatRect Asteroid::getBounds() const {
     return this->shape.getGlobalBounds();
 }
 
-bool Asteroid::isOutOfBounds(const sf::RenderTarget &target) const
-{
-    sf::Vector2f pos = this->shape.getPosition();
-    return (pos.y > target.getSize().y + 150.f || pos.y < -150.f || pos.x < -150.f
-            || pos.x > target.getSize().x + 150.f);
-}
-
-bool Asteroid::takeDamage()
-{
+bool Asteroid::takeDamage() {
     this->hp--;
     return this->hp <= 0;
 }
 
-void Asteroid::collideWith(Asteroid *other)
-{
+void Asteroid::collideWith(Asteroid *other) {
     sf::Vector2f pos1 = this->shape.getPosition();
     sf::Vector2f pos2 = other->shape.getPosition();
 

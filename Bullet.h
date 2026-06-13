@@ -2,8 +2,9 @@
 #define BULLET_HPP
 
 #include <SFML/Graphics.hpp>
+#include "GameObject.h"
 
-class Bullet
+class Bullet : public GameObject
 {
 private:
     sf::Sprite shape;
@@ -12,10 +13,9 @@ private:
 
 public:
     Bullet(sf::Texture *texture, float pos_x, float pos_y, float dir_x, float dir_y, float speed);
-    void update();
-    void render(sf::RenderTarget *target);
-    const sf::FloatRect getBounds() const;
-    bool isOutOfBounds(const sf::RenderTarget &target) const;
+    void update(sf::RenderTarget* target) override;
+    void render(sf::RenderTarget *target) override;
+    const sf::FloatRect getBounds() const override;
 };
 
 #endif

@@ -2,8 +2,9 @@
 #define TIMEBONUS_HPP
 
 #include <SFML/Graphics.hpp>
+#include "GameObject.h"
 
-class TimeBonus
+class TimeBonus : public GameObject
 {
 private:
     sf::Sprite shape;
@@ -12,10 +13,9 @@ private:
 
 public:
     TimeBonus(sf::Texture *texture, float pos_x, float pos_y);
-    void update();
-    void render(sf::RenderTarget *target);
-    const sf::FloatRect getBounds() const;
-    bool isExpired() const;
+    void update(sf::RenderTarget* target) override;
+    void render(sf::RenderTarget *target) override;
+    const sf::FloatRect getBounds() const override;
 };
 
 #endif

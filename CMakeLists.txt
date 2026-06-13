@@ -28,6 +28,7 @@ add_executable(Space_Shooter
     ScoreManager.cpp ScoreManager.h
     TimeBonus.cpp TimeBonus.h
     Explosion.cpp Explosion.h
+    GameObject.h
 )
 
 target_link_libraries(Space_Shooter PRIVATE

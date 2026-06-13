@@ -4,16 +4,17 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <cmath>
-#include <vector> // <- NOWE: Wymagane do przechowywania cząsteczek
+#include <vector>
+#include "GameObject.h"
 #include "Bullet.h"
 
-class Player {
+class Player : public GameObject {
 private:
     sf::Sprite sprite;
     sf::Texture textureIdle;
     sf::Texture textureThrust;
-
     sf::Vector2f velocity;
+
     void loadConfig();
     float acceleration;
     float drag;
@@ -22,23 +23,15 @@ private:
 
     int shootTimer;
     int shootTimerMax;
-
-    // MECHANIKA AMUNICJI
     int ammo;
     int ammoMax;
     bool reloading;
     int reloadTimer;
     int reloadTimerMax;
 
-    // AUDIO GRACZA
-    sf::SoundBuffer shootBuffer;
-    sf::Sound shootSound;
-    sf::SoundBuffer thrustBuffer;
-    sf::Sound thrustSound;
-    sf::SoundBuffer reloadBuffer;
-    sf::Sound reloadSound;
+    sf::SoundBuffer shootBuffer, thrustBuffer, reloadBuffer;
+    sf::Sound shootSound, thrustSound, reloadSound;
 
-    // --- NOWE: SYSTEM CZĄSTECZEK (DYM Z SILNIKA) ---
     struct ExhaustParticle {
         sf::RectangleShape shape;
         sf::Vector2f velocity;
@@ -55,25 +48,23 @@ public:
     Player();
     virtual ~Player();
 
-    void update(const sf::RenderTarget* target);
-    void render(sf::RenderTarget& target);
+    void update(sf::RenderTarget* target) override;
+    void render(sf::RenderTarget* target) override;
+
+    const sf::FloatRect getBounds() const override {
+        sf::FloatRect bounds = this->sprite.getGlobalBounds();
+        float margin = 20.f;
+        return sf::FloatRect(bounds.left + margin, bounds.top + margin, bounds.width - (2.f * margin), bounds.height - (2.f * margin));
+    }
 
     bool canShoot();
     Bullet* shoot(sf::Texture* bulletTexture);
-
     const sf::Vector2f& getPos() const;
     float getRotation() const;
-    const sf::FloatRect getBounds() const {
-        sf::FloatRect bounds = this->sprite.getGlobalBounds();
-        float margin = 20.f;
-        return sf::FloatRect(
-            bounds.left + margin,
-            bounds.top + margin,
-            bounds.width - (2.f * margin),
-            bounds.height - (2.f * margin)
-            );
-    }
     void resetPosition();
+
+    // NOWE: Funkcja do wczytywania gry
+    void loadState(int loadedAmmo, float px, float py);
 
     int getAmmo() const;
     int getAmmoMax() const;
